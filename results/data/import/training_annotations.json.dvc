@@ -1,0 +1,11 @@
+md5: b95a3923e1486b4ab9697a3e50852195
+frozen: true
+deps:
+- path: annotations/training_annotations.json
+  repo:
+    url: git@github.com:Gradiant/ai-dataset-CIFAR10.git
+    rev_lock: e36319c2ee3577297d89913d891c3c1fd3d3361a
+outs:
+- md5: 525fc72e1a60a1b6850f1a1c40e73bc6
+  size: 10539868
+  path: training_annotations.json
