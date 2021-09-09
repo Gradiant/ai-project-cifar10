@@ -1,0 +1,45 @@
+FROM condaforge/mambaforge:4.9.2-5 as build
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN --mount=type=cache,id=apt-build,target=/var/cache/apt \
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        ccache \
+        cmake \
+        git \
+        libjpeg-dev \
+        libpng-dev \
+        gcc \
+        libgl1-mesa-glx \
+        libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install conda requirements
+COPY ai-project-cifar10/environment/conda.yaml conda.yaml
+RUN --mount=type=cache,target=/opt/conda/pkgs mamba env update --name base --file conda.yaml && mamba clean -ya
+
+ENV PATH /opt/conda/bin:$PATH
+
+# Clean in a separate layer as calling conda still generates some __pycache__ files
+RUN find -name '*.a' -delete && \
+  rm -rf /opt/conda/conda-meta && \
+  rm -rf /opt/conda/include && \
+  find -name '__pycache__' -type d -exec rm -rf '{}' '+' && \
+  rm -rf /opt/conda/lib/python3.8/site-packages/pip2 /opt/conda/lib/python3.8/idlelib /opt/conda/lib/python3.8/ensurepip \
+    /opt/conda/lib/libasan.so.5.0.0 \
+    /opt/conda/lib/libtsan.so.0.0.0 \
+    /opt/conda/lib/liblsan.so.0.0.0 \
+    /opt/conda/lib/libubsan.so.1.0.0 \
+    /opt/conda/bin/x86_64-conda-linux-gnu-ld \
+    /opt/conda/bin/sqlite3 \
+    /opt/conda/bin/openssl \
+    /opt/conda/share/terminfo && \
+  find /opt/conda/lib/python3.8/site-packages/scipy -name 'tests' -type d -exec rm -rf '{}' '+' && \
+  find /opt/conda/lib/python3.8/site-packages/numpy -name 'tests' -type d -exec rm -rf '{}' '+' && \
+  find /opt/conda/lib/python3.8/site-packages/pandas -name 'tests' -type d -exec rm -rf '{}' '+' && \
+  find /opt/conda/lib/python3.8/site-packages -name '*.pyx' -delete && \
+  rm -rf /opt/conda/lib/python3.8/site-packages/uvloop/loop.c
+
+ENTRYPOINT [ "/bin/bash" ]

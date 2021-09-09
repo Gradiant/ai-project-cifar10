@@ -1,0 +1,23 @@
+silent: false
+branchName: full
+branches:
+  - label: data/create
+    prefix: data/create/
+  - label: data/explore
+    prefix: data/explore/
+  - label: data/import
+    prefix: data/import/
+  - label: data/transform
+    prefix: data/transform/
+  - label: dev/bugfix
+    prefix: dev/bugfix/
+  - label: dev/feature
+    prefix: dev/feature/
+  - label: experiment
+    prefix: experiment/
+  - label: model/deploy
+    prefix: model/deploy/
+  - label: model/export
+    prefix: model/export/
+  - label: model/explore
+    prefix: model/explore/

@@ -1,0 +1,4 @@
+CIFAR-10:
+  property_split:
+    property_name: "file_name"
+    pattern_to_match: "example_regex_pattern"

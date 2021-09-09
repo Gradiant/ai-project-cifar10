@@ -1,0 +1,20 @@
+{
+  "template": "git@github.com:Gradiant/ai-project-template.git",
+  "commit": "c2dce2d0dfb30942a63e4f915e91e37d336f1377",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "CIFAR10",
+      "project_slug": "cifar10",
+      "dataset": "CIFAR-10",
+      "dataset_version": "v0.1.0",
+      "task": "classification",
+      "num_classes": "10",
+      "_copy_without_render": [
+        ".github/workflows/*"
+      ],
+      "_template": "git@github.com:Gradiant/ai-project-template.git"
+    }
+  },
+  "directory": null
+}

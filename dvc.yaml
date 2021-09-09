@@ -1,0 +1,7 @@
+vars:
+  - configs/pipeline.yml
+stages:
+  test_dvc:
+    cmd: echo "DVC works"
+  test_imports:
+    cmd: python -c "import mmcv;import mmcls; import torch"

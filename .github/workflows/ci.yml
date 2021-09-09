@@ -1,0 +1,29 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    container:
+      image: ghcr.io/gradiant/ai-project-template/template_ci:latest
+      credentials:
+        username: gradiant
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint code
+        run: |
+          pre-commit install
+          pre-commit run
+      - name: Test data
+        run: pytest tests/data
+      - name: Test experiment
+        run: pytest tests/experiment
