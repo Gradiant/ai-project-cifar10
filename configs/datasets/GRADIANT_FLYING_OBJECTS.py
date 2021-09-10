@@ -1,7 +1,7 @@
 dataset_type = "ImageNet"
 
-img_dir = "/media/VA/databases/CIFAR-10/images/"
-ann_dir = "results/data/transform/coco_to_mmclassification-CIFAR-10/"
+img_dir = "/media/BM/databases/CIFAR10/"
+ann_dir = "results/data/transform/coco_to_mmclassification-CIFAR10/"
 
 CLASSES = None
 
