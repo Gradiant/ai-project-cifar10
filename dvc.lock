@@ -1,0 +1,34 @@
+schema: '2.0'
+stages:
+  test_imports:
+    cmd: python -c "import mmcv;import mmcls; import torch"
+  test_dvc:
+    cmd: echo "DVC works"
+  data-coco_to_mmclassification-CIFAR10@testing:
+    cmd: python stages/data/transform/coco_to_mmclassification.py --annotations_file
+      results/data/import/testing_annotations.json --output_file results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_testing.txt
+    deps:
+    - path: results/data/import/testing_annotations.json
+      md5: 7358e60a4cc85b686d5b24819ea1e570
+      size: 1709640
+    - path: stages/data/transform/coco_to_mmclassification.py
+      md5: 083bd1cf5b4c44c8e98c428e2e425cc2
+      size: 2009
+    outs:
+    - path: results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_testing.txt
+      md5: 17724bca57e066a292c4cf2750dae758
+      size: 200000
+  data-coco_to_mmclassification-CIFAR10@training:
+    cmd: python stages/data/transform/coco_to_mmclassification.py --annotations_file
+      results/data/import/training_annotations.json --output_file results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_training.txt
+    deps:
+    - path: results/data/import/training_annotations.json
+      md5: 5419e4b8cd87865fad0ac901c3733fd1
+      size: 10539868
+    - path: stages/data/transform/coco_to_mmclassification.py
+      md5: 083bd1cf5b4c44c8e98c428e2e425cc2
+      size: 2009
+    outs:
+    - path: results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_training.txt
+      md5: 8ba37e6ea58cc94310d54455f0e6cf9b
+      size: 1050000

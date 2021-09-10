@@ -5,3 +5,17 @@ stages:
     cmd: echo "DVC works"
   test_imports:
     cmd: python -c "import mmcv;import mmcls; import torch"
+  
+  data-coco_to_mmclassification-CIFAR10:
+      foreach:
+        - training
+        - testing
+      do:
+        cmd: python stages/data/transform/coco_to_mmclassification.py
+          --annotations_file results/data/import/${item}_annotations.json
+          --output_file results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_${item}.txt
+        deps:
+          - stages/data/transform/coco_to_mmclassification.py
+          - results/data/import/${item}_annotations.json
+        outs:
+          - results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR10_${item}.txt  
