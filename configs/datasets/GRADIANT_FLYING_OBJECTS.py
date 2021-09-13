@@ -3,9 +3,9 @@ dataset_type = "ImageNet"
 img_dir = "/media/BM/databases/CIFAR10/"
 ann_dir = "results/data/transform/coco_to_mmclassification-CIFAR10/"
 
-CLASSES = None
+CLASSES = ["airplane", "automobile","bird","cat","deer","dog","frog","horse","ship","truck"] 
 
-img_scale = (224, 224)
+img_scale = (32, 32)
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True
@@ -34,21 +34,21 @@ data = dict(
     train=dict(
         type=dataset_type,
         data_prefix=img_dir,
-        ann_file=ann_dir + "_train/CIFAR-10_train.txt",
+        ann_file=ann_dir + "CIFAR-10_training.txt",
         pipeline=train_pipeline,
         classes=CLASSES,
     ),
     val=dict(
         type=dataset_type,
         data_prefix=img_dir,
-        ann_file=ann_dir + "_val/CIFAR-10_val.txt",
+        ann_file=ann_dir + "CIFAR-10_testing.txt",
         pipeline=test_pipeline,
         classes=CLASSES,
     ),
     test=dict(
         type=dataset_type,
         data_prefix=img_dir,
-        ann_file=ann_dir + "_val/CIFAR-10_val.txt",
+        ann_file=ann_dir + "CIFAR-10_testing.txt",
         pipeline=test_pipeline,
         classes=CLASSES,
     ),

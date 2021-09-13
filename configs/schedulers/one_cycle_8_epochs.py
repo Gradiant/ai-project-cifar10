@@ -8,3 +8,4 @@ lr_config = dict(policy="cyclic", target_ratio=(10, 1e-2), step_ratio_up=0.3)
 total_epochs = 8
 runner = dict(type='EpochBasedRunner', max_epochs=total_epochs)
 evaluation = dict(interval=1, metric="accuracy")
+workflow = [("train", 1)]

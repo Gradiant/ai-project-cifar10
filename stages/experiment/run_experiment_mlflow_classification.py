@@ -7,22 +7,12 @@ from typing import List, Union
 import fire
 import mlflow
 from loguru import logger
-from mmcv.utils import import_modules_from_strings
+from post_train_evaluation_classification import post_train_evaluation
 from pydantic import FilePath
-from stages.experiment.registry_extras import *  # noqa: F401,F403
-from stages.experiment.setup_stage import setup_stage
-
-
-def _get_task():
-    return "classification"
-
-
-def load_modules(task):
-    modules = [
-        f"stages.experiment.{module}_{task}"
-        for module in ["train_stage", "test_stage", "post_train_evaluation"]
-    ]
-    return import_modules_from_strings(modules)
+from registry_extras import *  # noqa: F401,F403
+from setup_stage_classification import setup_stage
+from test_stage_classification import test_stage
+from train_stage_classification import train_stage
 
 
 def log_config_to_mlflow(config, env_info_dict):
@@ -49,13 +39,10 @@ def log_config_to_mlflow(config, env_info_dict):
 def run_experiment_mlflow(
     dataset: FilePath,
     model: FilePath,
-    runtime: FilePath,
+    optimizer: FilePath,
     scheduler: FilePath,
     gpus: Union[List[int], int] = 0,
 ):
-    task = _get_task()
-    train, test, evaluation = load_modules(task)
-
     with mlflow.start_run():
 
         timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
@@ -68,16 +55,16 @@ def run_experiment_mlflow(
         mlflow.log_artifact("results/experiment.json")
 
         config, meta, env_info_dict = setup_stage(
-            dataset, model, runtime, scheduler, gpus, artifact_uri, timestamp, task
+            dataset, model, optimizer, scheduler, gpus, artifact_uri, timestamp
         )
 
         log_config_to_mlflow(config, env_info_dict)
 
-        train.train_stage(task, config, meta, timestamp)
+        train_stage(config, meta, timestamp)
 
-        test.test_stage(config)
+        test_stage(config)
 
-        evaluation.post_train_evaluation(config)
+        post_train_evaluation(config)
 
 
 @logger.catch(reraise=True)
