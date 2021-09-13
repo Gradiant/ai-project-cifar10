@@ -2,11 +2,11 @@ from typing import Optional
 
 import fire
 import mmcv
-from mmcls.apis import single_gpu_test
-from mmcls.datasets import build_dataloader, build_dataset
-from mmcls.models import build_classifier
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import load_checkpoint
+from mmdet.apis import single_gpu_test
+from mmdet.datasets import build_dataloader, build_dataset
+from mmdet.models import build_detector
 from registry_extras import *  # noqa: F401,F403
 
 
@@ -21,7 +21,7 @@ def test_stage(
         config = mmcv.Config.fromfile(config)
 
     if checkpoint_file is None:
-        checkpoint_file = f"{config.work_dir}/latest.pth"
+        checkpoint_file = f"{config.work_dir}/best_bbox_mAP_50.pth"
 
     if output_file is None:
         output_file = f"{config.work_dir}/test_predictions.pkl"
@@ -42,13 +42,14 @@ def test_stage(
         shuffle=False,
     )
 
-    model = build_classifier(config.model)
+    model = build_detector(
+        config.model, train_cfg=config.get("train_cfg"), test_cfg=config.get("test_cfg")
+    )
 
     checkpoint = load_checkpoint(model, checkpoint_file, map_location="cpu")
 
-    model = MMDataParallel(model, device_ids=[0])
-
     model.CLASSES = checkpoint["meta"]["CLASSES"]
+    model = MMDataParallel(model, device_ids=[0])
 
     outputs = single_gpu_test(
         model, data_loader, show=False, out_dir=output_painted_dir

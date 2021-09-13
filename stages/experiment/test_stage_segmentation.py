@@ -2,12 +2,11 @@ from typing import Optional
 
 import fire
 import mmcv
-from mmcls.apis import single_gpu_test
-from mmcls.datasets import build_dataloader, build_dataset
-from mmcls.models import build_classifier
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import load_checkpoint
-from registry_extras import *  # noqa: F401,F403
+from mmseg.apis import single_gpu_test
+from mmseg.datasets import build_dataloader, build_dataset
+from mmseg.models import build_segmentor
 
 
 def test_stage(
@@ -42,16 +41,18 @@ def test_stage(
         shuffle=False,
     )
 
-    model = build_classifier(config.model)
+    model = build_segmentor(
+        config.model, train_cfg=config.get("train_cfg"), test_cfg=config.get("test_cfg")
+    )
 
     checkpoint = load_checkpoint(model, checkpoint_file, map_location="cpu")
 
+    model.CLASSES = checkpoint["meta"]["CLASSES"]
+    model.PALETTE = checkpoint["meta"]["PALETTE"]
     model = MMDataParallel(model, device_ids=[0])
 
-    model.CLASSES = checkpoint["meta"]["CLASSES"]
-
     outputs = single_gpu_test(
-        model, data_loader, show=False, out_dir=output_painted_dir
+        model, data_loader, efficient_test=True, show=False, out_dir=output_painted_dir
     )
 
     mmcv.dump(outputs, output_file)
