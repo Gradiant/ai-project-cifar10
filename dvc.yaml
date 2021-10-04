@@ -21,13 +21,13 @@ stages:
           - results/data/transform/coco_to_mmclassification-CIFAR10/CIFAR-10_${item}.txt  
           
   run_experiment_mlflow:
-        cmd: export MLFLOW_TRACKING_URI="http://10.10.30.58:8999/" && export CUDA_VISIBLE_DEVICES="2" &&
+        cmd: export MLFLOW_TRACKING_URI="http://10.10.30.58:8999/" && export CUDA_VISIBLE_DEVICES="1" &&
           mlflow run . --experiment-name CIFAR10 --no-conda
           -P dataset=configs/datasets/GRADIANT_FLYING_OBJECTS.py
           -P model=configs/models/resnet_18.py
           -P optimizer=configs/optimizers/SGD.py
-          -P scheduler=configs/schedulers/one_cycle_8_epochs.py
-          -P gpus=1
+          -P scheduler=configs/schedulers/one_cycle_12_epochs.py
+          -P gpus=2
         deps:
           - configs
           - results/data/transform/coco_to_mmclassification-CIFAR10
@@ -38,4 +38,4 @@ stages:
           - results/prc.json:
               cache: false
               x: recall
-              y: precision                
+              y: precision  
